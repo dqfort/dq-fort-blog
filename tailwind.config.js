@@ -18,7 +18,20 @@ export default {
           accent: withOpacity("--color-accent"),
           inverted: withOpacity("--color-fill"),
         },
-      }
+      },
+      backgroundColor: {
+        skin: {
+          fill: withOpacity("--color-fill"),
+          accent: withOpacity("--color-accent"),
+          inverted: withOpacity("--color-text-base"),
+        },
+      },
+      fill: {
+        skin: {
+          base: withOpacity("--color-text-base"),
+          accent: withOpacity("--color-accent"),
+        }
+      },
     },
   },
   plugins: [],
