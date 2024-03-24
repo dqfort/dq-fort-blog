@@ -8,4 +8,5 @@ export default defineConfig({
       applyBaseStyles: false,
     })
   ],
+  scopedStyleStrategy: "where" // Allow overriding by class attributes
 });
