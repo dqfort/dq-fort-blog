@@ -1,6 +1,13 @@
 <header>
   <div class="nav-container">
     <div class="top-nav-wrap">
+      <div class="logo">
+        <a href="/" class="blog-title">DQfort's blog</a>
+        <small class="stating">
+          satisfy or build better.
+        </small>
+      </div>
+
       <nav>
         <ul class="sm:flex">
           <li>
@@ -44,6 +51,37 @@
   }
   .top-nav-wrap {
     @apply relative flex w-full items-start justify-between p-4 sm:items-center sm:py-8;
+  }
+
+  .logo {
+    @apply whitespace-nowrap;
+    font-family: avenir next,avenir,sans-serif;
+  }
+  .logo .blog-title {
+    @apply text-xs;
+    color: #65d49fff;
+    position: relative;
+  }
+  .logo .blog-title::after {
+    background-color: #daf2e3ff;
+    bottom: 0;
+    content: " ";
+    display: block;
+    height: 50%;
+    left: -3px;
+    opacity: .5;
+    position: absolute;
+    transition: all .15s ease-in-out;
+    width: calc(100% + 6px);
+    z-index: -1;
+  }
+  .logo .blog-title:hover::after {
+    left: 7px;
+    opacity: 1;
+    width: calc(100% - 14px);
+  }
+  .logo .stating {
+    @apply text-xs text-gray-400 font-light;
   }
 
   nav {
