@@ -1,0 +1,26 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Header from "@components/Header.astro";
+import type { CollectionEntry } from "astro:content";
+
+export interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+
+const {
+  title
+} = post.data;
+
+const { Content } = await post.render();
+---
+
+<Layout title=`${title}`>
+  <Header />
+  <main id="main-content">
+    <article id="article" role="article" class="prose mx-auto mt-8 max-w-3xl">
+      <Content />
+    </article>
+  </main>
+</Layout>
