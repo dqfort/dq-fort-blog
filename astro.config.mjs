@@ -7,6 +7,5 @@ export default defineConfig({
     tailwind({
       applyBaseStyles: false,
     })
-  ],
-  scopedStyleStrategy: "where" // Allow overriding by class attributes
+  ]
 });
