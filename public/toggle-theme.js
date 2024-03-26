@@ -24,7 +24,11 @@ function setPreference() {
 }
 
 function reflectPreference() {
+  // TODO: use the class to instead the data-theme
   document.firstElementChild.setAttribute("data-theme", themeValue);
+
+  document.documentElement.classList.remove('light', 'dark');
+  document.documentElement.classList.add(themeValue);
 
   document.querySelector("#theme-btn")?.setAttribute("aria-label", themeValue);
 
