@@ -23,6 +23,8 @@ The basic idea of deep learning is consisted by perceptions, which calculate fro
 
 Even a single can do prediction. To simpify, we can create a preception with 2 inputs and 1 output, and it can form an equation as $f(x) = w_1x_1 + w_2x_2 + b.$
 
+![A preception with 2 inputs.](./preception_2-inputs.svg)
+
 Where $x_1, x_2$ are the input data, and $w_1, w_2, b$ are the weights and bias can be updated by training to output a more accurate value by the equation. The bias can be also written in $w_3 * 1$.
 
 How can it be used to predict? Let's say there are a group of data with weights and heights for either cats or mouses, it can be plotted a graph like:
