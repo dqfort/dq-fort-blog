@@ -33,8 +33,22 @@ We can draw a line to split the data to separate to the two groups, which is a t
 
 ## Training
 
-Continue to the model, we can define $\hat{y} = 1$ if $f(x) >= 0$ else $\hat{y} = 0$, to mean it is a cat if $\hat{y} = 1$ or it is not a cat if $\hat{y} = 0$ (in our case it is a mouse). But how do we get the weight values for the perceptron to form the equation to split the data? We could assume that when a prediction from $f(x)$ getting bigger, it is more like a cat. We can use that to evolute the model. But there is a problem when some predictions are large and some predictions are small. We need to need a function for normalizing, one commonly used is sigma function:
+Continue to the model, we can define $\hat{y} = 1$ if $f(x) >= 0$ else $\hat{y} = 0$, to mean it is a cat if $\hat{y} = 1$ or it is not a cat if $\hat{y} = 0$ (in our case it is a mouse). But how do we get the weight values for the perceptron to form the equation to split the data? We could assume that when a output from $f(x)$ getting bigger, it is more like a cat. We can use that to evolute the model. But there is a problem when some outputs are large and some outputs are small. We need to need a function for normalizing, one commonly used is sigmoid function:
 $$
     \sigma(x) = \frac{1} {1 + e^{-x}}
 $$
 
+It also can present probability. Now we can use sigmoid to apply to the perception to ouput a probability of beginning a cat as:
+$$
+    P(C) = \hat{y} = \sigma(f(x))
+$$
+
+For the probability for the model correction prediction: 
+$$
+    P = \prod_{i=0}y_i*\sigma(\hat{y}_i)+(1-y_i)*(1-\sigma(\hat{y}_i))
+$$
+
+But there is a problem if there are a lot of predicted outputs, the $p$ will become very small. To solve it, we can take $\log$ to $p$ so that
+$$
+    \log(p) = \sum_{i=0}y_i*\log(\sigma(\hat{y}_i)) + (1-y_i)*\log(1-\sigma(\hat{y}_i))
+$$
