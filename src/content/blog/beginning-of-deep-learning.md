@@ -19,9 +19,9 @@ Large deep learning model is very complex, but small model is relatively underst
 
 ## Perceptron
 
-The basic idea of deep learning is consisted by perceptrons, which calculate from the input data to a perceptron output. For instance, an output 0.3 is a probability of an image of a cat.
+The basic idea of deep learning is consisted by perceptrons, which calculate from the input data to a prediction output. For instance, an output 0.3 is a probability of an image of a cat.
 
-Even a single can do perceptron. To simpify, we can create a perceptron with 2 inputs and 1 output, and it can form an equation as $f(x) = w_1x_1 + w_2x_2 + b.$
+Even a single can do prediction. To simpify, we can create a perceptron with 2 inputs and 1 output, and it can form an equation as $f(x) = w_1x_1 + w_2x_2 + b.$
 
 ![A perceptron with 2 inputs.](./perceptron_2-inputs.svg)
 
@@ -31,7 +31,7 @@ How can it be used to predict? Let's say there are a group of data with kilogram
 
 We can draw a line to split the data to separate to the two groups, which is a task can be performed by the perceptron: if $f(x) >= 0$ then it is a cat, else it is a mouse.
 
-## Training
+## Loss function
 
 Continue to the model, we can define $\hat{y} = 1$ if $f(x) >= 0$ else $\hat{y} = 0$, to mean it is a cat if $\hat{y} = 1$ or it is not a cat if $\hat{y} = 0$ (in our case it is a mouse). But how do we get the weight values for the perceptron to form the equation to split the data? We could assume that when a output from $f(x)$ getting bigger, it is more like a cat. We can use that to evolute the model. But there is a problem when some outputs are large and some outputs are small. We need to need a function for normalizing, one commonly used is sigmoid function:
 $$
@@ -43,12 +43,86 @@ $$
     P(C) = \hat{y} = \sigma(f(x))
 $$
 
-For the probability for the model correction prediction: 
+For the probability for the model correction prediction of $m$ items: 
 $$
-    P = \prod_{i=0}y_i*\sigma(\hat{y}_i)+(1-y_i)*(1-\sigma(\hat{y}_i))
+    P = \prod_{i=0}^m y_i*\sigma(\hat{y}_i)+(1-y_i)*(1-\sigma(\hat{y}_i))
 $$
 
-But there is a problem if there are a lot of predicted outputs, the $p$ will become very small. To solve it, we can take $\log$ to $p$ so that
+But there is a problem if there are a lot of predicted outputs, the $P$ will become very small. To solve it, we can take $\log$ to $p$ so that
 $$
-    \log(p) = \sum_{i=0}y_i*\log(\sigma(\hat{y}_i)) + (1-y_i)*\log(1-\sigma(\hat{y}_i))
+    \log(P) = \sum_{i=0}^m y_i*\log(\sigma(\hat{y}_i)) + (1-y_i)*\log(1-\sigma(\hat{y}_i))
 $$
+
+It will be a negative value since every sigmoid output is greater than 0 and lesser than 1. We can take a negative value of it, and then even take an average of it:
+$$
+    -\frac{1}{m}\sum_{i=0}^m y_i*\log(\sigma(\hat{y}_i)) + (1-y_i)*\log(1-\sigma(\hat{y}_i))
+$$
+
+The value from this formula can indicate how well perform of a model. If the value is high that means the model didn't predict well; if the value is low then the model predicted well. This formula is Binary Cross Entropy a kind of cross-entropy loss function for meassuring loss, which can also help for optimaze models.
+
+## Training
+
+Now we got a loss function to know how good of a model. And it can also help to optimize a model. How is it possible? What need to do is trying to adjust the weights of the model to make the loss function evaluated near zero. But how much should we adjust the weight? The anwser is by using derivative. For example consider a function $f(x) = x^2$, its derivative is $2x$. By adding the derivation with a different of $x$ values, ${x_1}^2 \approx {x_0}^2 + 2(x_1-x_0)$. The derviative indicates the direction and the magnitude to change and we can take the oppositive of the derviative as $x_1 = x_0 - af'(x_0)$ (in this case $x_1 = x_0 - a2x_0$) to optimize $x$ to find the minimum point of the function. (This is called steepest descent or graident descent, there are other ways to update weights).
+
+Now we can use derivative to calculate the gradient of the error function. To simpify, let:
+$$
+    E = -y * log(\sigma(\hat{y})) - (1-y) * log(1-\sigma(\hat{y}))
+$$
+
+Take its partial derivative for the weight:
+$$
+    \frac{\partial E}{\partial w_j} =  \frac{\partial}{\partial w_j}[-y * log(\sigma(\hat{y})) - (1-y) * log(1-\sigma(\hat{y}))]
+$$
+
+$$
+\begin{align}
+   x = -y \frac{1}{\sigma(\hat y)} .\frac{\partial}{\partial w_j}\sigma(\hat y) -(1-y) \frac{1}{1-\sigma(\hat y)} .\frac{\partial}{\partial w_j}-\sigma(\hat y)
+\end{align}
+$$
+
+The derivative of sigmoid function:
+$$
+\begin{align}
+    \sigma'(x) &= \frac{\partial}{\partial x} \frac{1} {1 + e^{-x}} \\\\
+    &= -1 . (1 + e^{-x})^{-2} . \frac{\partial e^{-x}}{\partial x} \\\\
+    &= -1 . (1 + e^{-x})^{-2} . e^{-x} . -1 \\\\
+    &= \frac{e^{-x}}{(1 + e^{-x})^2} \\\\
+    &= \frac{1}{1 + e^{-x}} . \frac{e^{-x} + 1 - 1}{1 + e^{-x}} \\\\
+    &= \sigma(x)(1 - \sigma(x))
+\end{align}
+$$
+
+And partial derivative of $\sigma(\hat y)$ for $w_j$, where $\hat y = Wx+b$
+$$
+\begin{align}
+    \frac{\partial \sigma(\hat y)}{\partial w_j} &= \sigma(\hat y)(1 - \sigma(\hat y)) . \frac{\partial \hat y}{\partial w_j}\\\\
+    &= \sigma(\hat y)(1 - \sigma(\hat y)) . \frac{\partial}{\partial w_j}(w_1x_1 + \cdots + w_jx_j + \cdots + w_nx_n + b)\\\\
+    &= \sigma(\hat y)(1 - \sigma(\hat y))x_j
+\end{align}
+$$
+
+Back to the error function
+$$
+\begin{align}
+    b_j &= b_j + \alpha (y - \sigma(\hat y))
+\end{align}
+$$
+
+
+$$
+\begin{align}
+    \frac{\partial E}{\partial w_j} &= -y \frac{1}{\sigma(\hat y)} . \sigma(\hat y)(1 - \sigma(\hat y))x_j + (1-y) \frac{1}{1-\sigma(\hat y)} . \sigma(\hat y)(1 - \sigma(\hat y))x_j \\\\
+    &= -y(1 - \sigma(\hat y))x_j + (1-y)\sigma(\hat y)x_j \\\\
+    &= -(y - \sigma(\hat y))x_j
+\end{align}
+$$
+
+The weight and bias will be updated:
+$$
+\begin{align*}
+    w_j' &= w_j + \alpha (y - \sigma(\hat y))x_j \\\\
+    b_j' &= b_j + \alpha (y - \sigma(\hat y))
+\end{align*}
+$$
+
+$\alpha$ should mean $\frac{1}{m}\alpha$ as the average of the batch multiples the learning rate, but just using one constant for that for convenient.
