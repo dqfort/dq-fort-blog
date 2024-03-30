@@ -59,3 +59,21 @@ const { Content } = await post.render();
     @apply text-2xl text-skin-accent;
   }
 </style>
+
+<!-- Dirty fix for react css cannot be loaded in posts for production -->
+<style is:global>
+  .axis line {
+    fill: none;
+    stroke: #ddd;
+    shape-rendering: crispEdges;
+  }
+
+  .axis text {
+    fill: #777;
+    font-size: 10px;
+  }
+
+  .axis path {
+    display: none;
+  }
+</style>
