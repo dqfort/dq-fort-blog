@@ -1,0 +1,26 @@
+.btn {
+    @apply font-bold py-2 px-4 rounded;
+  }
+  .btn-blue {
+    @apply bg-blue-500 text-white;
+  }
+  .btn-blue:hover {
+    @apply bg-blue-700;
+  }
+
+  .axis line {
+    fill: none;
+    /* stroke: #777; */
+    stroke: #ddd;
+    shape-rendering: crispEdges;
+  }
+  
+  .axis text {
+    fill: #777;
+    font-size: 10px;
+  }
+  
+  .axis path {
+    display: none;
+  }
+  
