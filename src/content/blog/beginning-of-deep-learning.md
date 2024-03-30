@@ -33,7 +33,15 @@ We can draw a line to split the data to separate to the two groups, which is a t
 
 ## Loss function
 
-Continue to the model, we can define $\hat{y} = 1$ if $f(x) >= 0$ else $\hat{y} = 0$, to mean it is a cat if $\hat{y} = 1$ or it is not a cat if $\hat{y} = 0$ (in our case it is a mouse). But how do we get the weight values for the perceptron to form the equation to split the data? We could assume that when a output from $f(x)$ getting bigger, it is more like a cat. We can use that to evolute the model. But there is a problem when some outputs are large and some outputs are small. We need to need a function for normalizing, one commonly used is sigmoid function:
+Continue to the model, we can define: 
+$$
+\hat{y} = \begin{cases}
+   1 &\text{if } f(x) >= 0 \\\\
+   0 &\text{if } f(x) < 0
+\end{cases}
+$$
+
+to mean it is a cat if $\hat{y} = 1$ or it is not a cat if $\hat{y} = 0$. (in our case it is a mouse). But how do we get the weight values for the perceptron to form the equation to split the data? We could assume that when a output from $f(x)$ getting bigger, it is more like a cat. We can use that to evolute the model. But there is a problem when some outputs are large and some outputs are small. We need to need a function for normalizing, one commonly used is sigmoid function:
 $$
     \sigma(x) = \frac{1} {1 + e^{-x}}
 $$
@@ -64,9 +72,9 @@ The value from this formula can indicate how well perform of a model. If the val
 
 Now we got a loss function to know how good of a model. And it can also help to optimize a model. How is it possible? What need to do is trying to adjust the weights of the model to make the loss function evaluated near zero. But how much should we adjust the weight? The anwser is by using derivative. For example consider a function $f(x) = x^2$, its derivative is $2x$. By adding the derivation with a different of $x$ values, ${x_1}^2 \approx {x_0}^2 + 2(x_1-x_0)$. The derviative indicates the direction and the magnitude to change and we can take the oppositive of the derviative as $x_1 = x_0 - af'(x_0)$ (in this case $x_1 = x_0 - a2x_0$) to optimize $x$ to find the minimum point of the function. (This is called steepest descent or graident descent, there are other ways to update weights).
 
-Now we can use derivative to calculate the gradient of the error function. To simpify, let:
+Now we can use derivative to calculate the gradient of the loss function. To simpify, let:
 $$
-    E = -y * log(\sigma(\hat{y})) - (1-y) * log(1-\sigma(\hat{y}))
+    L = -y * log(\sigma(\hat{y})) - (1-y) * log(1-\sigma(\hat{y}))
 $$
 
 Take its partial derivative for the weight:
@@ -101,7 +109,7 @@ $$
 \end{align}
 $$
 
-Back to the error function
+Back to the loss function
 $$
 \begin{align}
     b_j &= b_j + \alpha (y - \sigma(\hat y))
@@ -111,7 +119,7 @@ $$
 
 $$
 \begin{align}
-    \frac{\partial E}{\partial w_j} &= -y \frac{1}{\sigma(\hat y)} . \sigma(\hat y)(1 - \sigma(\hat y))x_j + (1-y) \frac{1}{1-\sigma(\hat y)} . \sigma(\hat y)(1 - \sigma(\hat y))x_j \\\\
+    \frac{\partial L}{\partial w_j} &= -y \frac{1}{\sigma(\hat y)} . \sigma(\hat y)(1 - \sigma(\hat y))x_j + (1-y) \frac{1}{1-\sigma(\hat y)} . \sigma(\hat y)(1 - \sigma(\hat y))x_j \\\\
     &= -y(1 - \sigma(\hat y))x_j + (1-y)\sigma(\hat y)x_j \\\\
     &= -(y - \sigma(\hat y))x_j
 \end{align}
@@ -126,3 +134,6 @@ $$
 $$
 
 $\alpha$ should mean $\frac{1}{m}\alpha$ as the average of the batch multiples the learning rate, but just using one constant for that for convenient.
+
+## Sample app demo
+Here a sample app for demolish how the things work.
