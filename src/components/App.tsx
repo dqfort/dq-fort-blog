@@ -1,15 +1,17 @@
-import {useEffect, useReducer, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import './App.css';
 
 
 export default function App() {
+  const [mode, setMode] = useState("");
   const svgRef = useRef<SVGSVGElement>(null);
+  const plotClickHandlerRef = useRef<((event: MouseEvent) => void) | null>(null);
 
-  const trainData: {x1: number, x2: number, label: number}[] = [];
-  trainData.push({x1: 1, x2: 2, label: 0});
-  trainData.push({x1: 10, x2: 11, label: 1});
-  trainData.push({x1: 9, x2: 8, label: 1});
-  trainData.push({x1: 9, x2: 3, label: 0});
+  const trainData = useRef<{x1: number, x2: number, label: number}[]>([]);
+  trainData.current.push({x1: 1, x2: 2, label: 0});
+  trainData.current.push({x1: 10, x2: 11, label: 1});
+  trainData.current.push({x1: 9, x2: 8, label: 1});
+  trainData.current.push({x1: 9, x2: 3, label: 0});
 
   const createSvgElement = (qualifiedName: string) => document.createElementNS(
     'http://www.w3.org/2000/svg',
@@ -18,15 +20,21 @@ export default function App() {
 
   const setTransform = (svgElement: SVGElement, x: number, y: number) => svgElement.setAttribute("transform", `translate(${x},${y})`);
 
+  const plotWidth = 260;
+  const axisUnit = 12;
+  const axisUnitLength = plotWidth / axisUnit;
+
   useEffect(() => {
     const plotGroup = createSvgElement("g");
     setTransform(plotGroup, 20, 20);
 
     const axisBound = createSvgElement("rect");
+    axisBound.setAttribute("id", "axisBound");
     axisBound.setAttribute("width", "260");
     axisBound.setAttribute("height", "260");
     axisBound.setAttribute("stroke", "#777");
     axisBound.setAttribute("fill", "transparent");
+
     plotGroup.appendChild(axisBound);
 
     const xAxis = createSvgElement("g");
@@ -83,28 +91,25 @@ export default function App() {
     svgRef.current?.appendChild(plotGroup);
 
     const trainGroup = createSvgElement("g");
+    trainGroup.setAttribute("id", "trainGroup");
 
-    const plotWidth = 260;
-    const axisUnit = 12;
-    const axisUnitLength = plotWidth / axisUnit;
-
-    trainData.forEach((item) => {
+    const addDataPoint = (item: {x1: number, x2: number, label: number}) => {
       const dataPoint = createSvgElement("circle");
       dataPoint.setAttribute("r", "3");
       dataPoint.setAttribute("cx", `${axisUnitLength * item.x1}`);
       dataPoint.setAttribute("cy", `${plotWidth - axisUnitLength * item.x2}`);
       dataPoint.setAttribute("style", `${item.label == 1 ?  "fill: rgb(8, 119, 189);" : "fill: rgb(245, 147, 34);" }`);
       trainGroup.appendChild(dataPoint);
+    }
+
+    trainData.current.forEach((item) => {
+      addDataPoint(item);
     });
 
     plotGroup.appendChild(trainGroup);
 
     const perceptronSplitter = createSvgElement("line");
     perceptronSplitter.setAttribute("stroke", "black");
-    perceptronSplitter.setAttribute("x1", `${260/2}`);
-    perceptronSplitter.setAttribute("y1", "-10");
-    perceptronSplitter.setAttribute("x2", `${260/2}`);
-    perceptronSplitter.setAttribute("y2", `${260 + 10}`);
 
     plotGroup.appendChild(perceptronSplitter);
 
@@ -137,12 +142,8 @@ export default function App() {
     }
 
     const trainPerceptron = () => {
-
-      // console.log([x1, y1]);
-      // console.log([x2, y2]);
-
       let weightUpdates = [0, 0, 0];
-      trainData.forEach(item => {
+      trainData.current.forEach(item => {
         const yHat = sigmoid(weightOuput(item.x1, item.x2));
         weightUpdates[0] += (item.label - yHat) * item.x1;
         weightUpdates[1] += (item.label - yHat) * item.x2;
@@ -176,15 +177,60 @@ export default function App() {
     return () => {
       window.cancelAnimationFrame(animationFrameId)
     }
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if (mode) {
+      const axisBound = svgRef.current?.getElementById("axisBound") as SVGElement;
+      const trainGroup = svgRef.current?.getElementById("trainGroup") as SVGElement;
+
+      if (! (axisBound && trainGroup)) return;
+      const addDataPoint = (item: {x1: number, x2: number, label: number}) => {
+        const dataPoint = createSvgElement("circle");
+        dataPoint.setAttribute("r", "3");
+        dataPoint.setAttribute("cx", `${axisUnitLength * item.x1}`);
+        dataPoint.setAttribute("cy", `${plotWidth - axisUnitLength * item.x2}`);
+        dataPoint.setAttribute("style", `${item.label == 1 ?  "fill: rgb(8, 119, 189);" : "fill: rgb(245, 147, 34);" }`);
+        trainGroup.appendChild(dataPoint);
+      }
+
+      if (plotClickHandlerRef.current) {
+        axisBound.removeEventListener("click", plotClickHandlerRef.current);
+      }
+
+      plotClickHandlerRef.current = (event: MouseEvent):void => {
+        const plotX = event.offsetX - 20;
+        const plotY = event.offsetY - 20
+        const x = plotX / axisUnitLength;
+        const y = (plotWidth - plotY) / axisUnitLength;
+        const label = mode == "AddTrue" ? 1 : 0;
+        const item = {x1: x, x2: y, label: label};
+        trainData.current.push(item);
+        addDataPoint(item);
+      };
+  
+      axisBound.addEventListener('click', plotClickHandlerRef.current);
+    }
+  }, [mode]);
 
   return (
     <div>
       <svg height={300} width={300} ref={svgRef}
         xmlns="http://www.w3.org/2000/svg">
       </svg>
-      {/* <button onClick={addFive} className="btn btn-blue">Add 5</button>
-      <button onClick={reset} className="btn btn-blue">Reset</button> */}
+
+      <div className="inline-flex">
+        <button onClick={() => { setMode("AddTrue"); }} className={`${ mode == "AddTrue" ? "bg-gray-400" : "bg-gray-300" } hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l`}>
+          + True
+        </button>
+        {/* <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 focus:bg-amber-600 focus:outline-none">
+          delete
+        </button> */}
+        <button onClick={() => { setMode("AddFalse"); }} className={`${ mode == "AddFalse" ? "bg-gray-400" : "bg-gray-300" } bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r`}>
+          + False
+        </button>
+      </div>
+      {/* <button onClick={reset} className="btn btn-blue">Reset</button> */}
     </div>
   );
 }
