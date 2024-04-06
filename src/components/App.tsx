@@ -9,10 +9,6 @@ export default function App() {
   const isDeletable = useRef(false);
 
   const trainData = useRef<{x1: number, x2: number, label: number}[]>([]);
-  trainData.current.push({x1: 1, x2: 2, label: 0});
-  trainData.current.push({x1: 10, x2: 11, label: 1});
-  trainData.current.push({x1: 9, x2: 8, label: 1});
-  trainData.current.push({x1: 9, x2: 3, label: 0});
 
   const createSvgElement = (qualifiedName: string) => document.createElementNS(
     'http://www.w3.org/2000/svg',
@@ -48,7 +44,7 @@ export default function App() {
               trainData.current.splice(index, 1);
             }
           }
-          
+
           node.parentElement?.removeChild(node);
         }
       });
@@ -57,6 +53,11 @@ export default function App() {
   }
 
   useEffect(() => {
+    trainData.current.push({x1: 1, x2: 2, label: 0});
+    trainData.current.push({x1: 10, x2: 11, label: 1});
+    trainData.current.push({x1: 9, x2: 8, label: 1});
+    trainData.current.push({x1: 9, x2: 3, label: 0});
+
     const plotGroup = createSvgElement("g");
     setTransform(plotGroup, 20, 20);
 
