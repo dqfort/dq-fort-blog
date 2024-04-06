@@ -6,6 +6,7 @@ export default function App() {
   const [mode, setMode] = useState("");
   const svgRef = useRef<SVGSVGElement>(null);
   const plotClickHandlerRef = useRef<((event: MouseEvent) => void) | null>(null);
+  const isDeletable = useRef(false);
 
   const trainData = useRef<{x1: number, x2: number, label: number}[]>([]);
   trainData.current.push({x1: 1, x2: 2, label: 0});
@@ -23,6 +24,37 @@ export default function App() {
   const plotWidth = 260;
   const axisUnit = 12;
   const axisUnitLength = plotWidth / axisUnit;
+
+  const addDataPoint = (trainGroup: SVGElement, item: {x1: number, x2: number, label: number}) => {
+    const dataPoint = createSvgElement("circle");
+    dataPoint.setAttribute("r", "3");
+    dataPoint.setAttribute("data-x", `${item.x1}`);
+    dataPoint.setAttribute("data-y", `${item.x2}`);
+    dataPoint.setAttribute("cx", `${axisUnitLength * item.x1}`);
+    dataPoint.setAttribute("cy", `${plotWidth - axisUnitLength * item.x2}`);
+    dataPoint.setAttribute("style", `${item.label == 1 ?  "fill: rgb(8, 119, 189);" : "fill: rgb(245, 147, 34);" }`);
+
+    dataPoint.addEventListener(
+      "click", (event) => {
+        if (isDeletable.current) {
+          const node = event.target as SVGAElement;
+
+          const x = Number(node.dataset.x);
+          const y = Number(node.dataset.y);
+  
+          for (let index = 0; index < trainData.current.length; index++) {
+            const item = trainData.current[index];
+            if (item.x1 == x && item.x2 == y) {
+              trainData.current.splice(index, 1);
+            }
+          }
+          
+          node.parentElement?.removeChild(node);
+        }
+      });
+
+    trainGroup.appendChild(dataPoint);
+  }
 
   useEffect(() => {
     const plotGroup = createSvgElement("g");
@@ -93,17 +125,8 @@ export default function App() {
     const trainGroup = createSvgElement("g");
     trainGroup.setAttribute("id", "trainGroup");
 
-    const addDataPoint = (item: {x1: number, x2: number, label: number}) => {
-      const dataPoint = createSvgElement("circle");
-      dataPoint.setAttribute("r", "3");
-      dataPoint.setAttribute("cx", `${axisUnitLength * item.x1}`);
-      dataPoint.setAttribute("cy", `${plotWidth - axisUnitLength * item.x2}`);
-      dataPoint.setAttribute("style", `${item.label == 1 ?  "fill: rgb(8, 119, 189);" : "fill: rgb(245, 147, 34);" }`);
-      trainGroup.appendChild(dataPoint);
-    }
-
     trainData.current.forEach((item) => {
-      addDataPoint(item);
+      addDataPoint(trainGroup, item);
     });
 
     plotGroup.appendChild(trainGroup);
@@ -180,19 +203,20 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (mode) {
+    if (mode == 'Remove') {
+      const axisBound = svgRef.current?.getElementById("axisBound") as SVGElement;
+      if (plotClickHandlerRef.current) {
+        axisBound.removeEventListener("click", plotClickHandlerRef.current);
+      }
+
+      isDeletable.current = true;
+    }
+    else if (mode == "AddTrue" || mode == "AddFalse") {
+      isDeletable.current = false;
+
       const axisBound = svgRef.current?.getElementById("axisBound") as SVGElement;
       const trainGroup = svgRef.current?.getElementById("trainGroup") as SVGElement;
-
       if (! (axisBound && trainGroup)) return;
-      const addDataPoint = (item: {x1: number, x2: number, label: number}) => {
-        const dataPoint = createSvgElement("circle");
-        dataPoint.setAttribute("r", "3");
-        dataPoint.setAttribute("cx", `${axisUnitLength * item.x1}`);
-        dataPoint.setAttribute("cy", `${plotWidth - axisUnitLength * item.x2}`);
-        dataPoint.setAttribute("style", `${item.label == 1 ?  "fill: rgb(8, 119, 189);" : "fill: rgb(245, 147, 34);" }`);
-        trainGroup.appendChild(dataPoint);
-      }
 
       if (plotClickHandlerRef.current) {
         axisBound.removeEventListener("click", plotClickHandlerRef.current);
@@ -206,7 +230,7 @@ export default function App() {
         const label = mode == "AddTrue" ? 1 : 0;
         const item = {x1: x, x2: y, label: label};
         trainData.current.push(item);
-        addDataPoint(item);
+        addDataPoint(trainGroup, item);
       };
   
       axisBound.addEventListener('click', plotClickHandlerRef.current);
@@ -223,11 +247,11 @@ export default function App() {
         <button onClick={() => { setMode("AddTrue"); }} className={`${ mode == "AddTrue" ? "bg-gray-400" : "bg-gray-300" } hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l`}>
           + True
         </button>
-        {/* <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 focus:bg-amber-600 focus:outline-none">
-          delete
-        </button> */}
-        <button onClick={() => { setMode("AddFalse"); }} className={`${ mode == "AddFalse" ? "bg-gray-400" : "bg-gray-300" } bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r`}>
+        <button onClick={() => { setMode("AddFalse"); }} className={`${ mode == "AddFalse" ? "bg-gray-400" : "bg-gray-300" } bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4`}>
           + False
+        </button>
+        <button onClick={() => { setMode("Remove"); }} className={`${ mode == "Remove" ? "bg-gray-400" : "bg-gray-300" } bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r`}>
+          - Remove
         </button>
       </div>
       {/* <button onClick={reset} className="btn btn-blue">Reset</button> */}
