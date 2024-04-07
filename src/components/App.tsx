@@ -143,18 +143,26 @@ export default function App() {
     // y = (-w1*x -w3*1)/w2
     // y = (-w1*x -w3*1)/w2
 
-    const getperceptronSplitterPoint = (p: number) => {
-      const y = (-1 * weights[0] * p + -1 * weights[2]) / weights[1];
+    const getperceptronSplitterPoint = (pX: number) => {
+      const pY = (-1 * weights[0] * pX + -1 * weights[2]) / weights[1];
+      const getX = (y: number) => (-1 * weights[1] * y + -1 * weights[2]) / weights[0];
 
-      if (Math.abs(y) == Infinity) {
-        const x = (-1 * weights[1] * p + -1 * weights[2]) / weights[0];
-        return [x, p];
+      if (Math.abs(pY) == Infinity) {
+        const x = (-1 * weights[1] * pX + -1 * weights[2]) / weights[0];
+        return [x, pX];
       } 
-      // else if (Math.abs(x) == Infinity) {
-      //   return [p, y];
-      // }
 
-      return [p, y] // or [x, p] ?
+      if (pY >= 12) {
+        const x = getX(12);
+        return [x, 12];
+      }
+
+      if (pY <= 0) {
+        const x = getX(0);
+        return [x, 0];
+      }
+
+      return [pX, pY];
     }
 
     const weightOuput = (x1: number, x2: number) => {
