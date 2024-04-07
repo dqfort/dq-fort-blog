@@ -14,9 +14,9 @@ description:
 ---
 import App from "@components/App.tsx";
 
-AI has been impacting our life nowadays, from image classification to ChatGPT, the evolution is very fast! Most of the AI models are implemented by using deep learning technique, which is using a huge amount of data to train the model to get better results for prediction.
+AI has been impacting our lives nowadays, from image classification to ChatGPT, the evolution is very fast! Most of the AI models are implemented by using deep learning techniques, which use a huge amount of data to train the model to get better results for prediction.
 
-Large deep learning model is very complex, but small model is relatively understandable and can do a lot of things, like image classification, sales forecasting, recommendation etc.
+A large deep learning model is very complex, but a small model is relatively understandable and can do a lot of things, like image classification, sales forecasting, recommendation, etc.
 
 ## Perceptron
 
@@ -47,95 +47,91 @@ $$
     \sigma(x) = \frac{1} {1 + e^{-x}}
 $$
 
-It also can present probability. Now we can use sigmoid to apply to the perception to ouput a probability of beginning a cat as:
+It also can present probability. Now we can use sigmoid to apply to the perception to output a probability of beginning a cat as:
 $$
     P(C) = \hat{y} = \sigma(f(x))
 $$
 
-For the probability for the model correction prediction of $m$ items: 
+For the probability of the model correction prediction of $m$ items: 
 $$
-    P = \prod_{i=0}^m y_i*\sigma(\hat{y}_i)+(1-y_i)*(1-\sigma(\hat{y}_i))
+    P = \prod_{i=0}^m y_i\cdot\hat{y}_i+(1-y_i)(1-\hat{y}_i)
 $$
 
 But there is a problem if there are a lot of predicted outputs, the $P$ will become very small. To solve it, we can take $\log$ to $p$ so that
 $$
-    \log(P) = \sum_{i=0}^m y_i*\log(\sigma(\hat{y}_i)) + (1-y_i)*\log(1-\sigma(\hat{y}_i))
+    \log(P) = \sum_{i=0}^m y_i\cdot\log(\hat{y}_i) + (1-y_i)\log(1-\hat{y}_i)
 $$
 
-It will be a negative value since every sigmoid output is greater than 0 and lesser than 1. We can take a negative value of it, and then even take an average of it:
+It will result a negative value since every sigmoid output is greater than 0 and lesser than 1. We can take a negative value of it, and also take an average of it:
 $$
-    -\frac{1}{m}\sum_{i=0}^m y_i*\log(\sigma(\hat{y}_i)) + (1-y_i)*\log(1-\sigma(\hat{y}_i))
+    -\frac{1}{m}\sum_{i=0}^m y_i\cdot\log(\hat{y}_i) + (1-y_i)\log(1-\hat{y}_i)
 $$
 
 The value from this formula can indicate how well perform of a model. If the value is high that means the model didn't predict well; if the value is low then the model predicted well. This formula is Binary Cross Entropy a kind of cross-entropy loss function for meassuring loss, which can also help for optimaze models.
 
 ## Training
 
-Now we got a loss function to know how good of a model. And it can also help to optimize a model. How is it possible? What need to do is trying to adjust the weights of the model to make the loss function evaluated near zero. But how much should we adjust the weight? The anwser is by using derivative. For example consider a function $f(x) = x^2$, its derivative is $2x$. By adding the derivation with a different of $x$ values, ${x_1}^2 \approx {x_0}^2 + 2(x_1-x_0)$. The derviative indicates the direction and the magnitude to change and we can take the oppositive of the derviative as $x_1 = x_0 - af'(x_0)$ (in this case $x_1 = x_0 - a2x_0$) to optimize $x$ to find the minimum point of the function. (This is called steepest descent or graident descent, there are other ways to update weights).
+Now we have a loss function to know how good of a model. And it can also help to optimize a model. How is it possible? What need to do is try to adjust the weights of the model to make the loss function evaluated near zero. 
+We can update the model's weights to form $f(x)$ to result in outputs always higher or equal to one to mean it is a cat for higher heights and kilograms as inputs, and vice versa it is a mouse.
+But how much should we adjust the weight? The answer is by using the derivative. For example, consider a function $f(x) = x^2$, 
+its derivative is $2x$. By adding the derivative with a different of $x$ values, ${x_1}^2 \approx {x_0}^2 + 2(x_1-x_0)$. 
+The derivative indicates the direction and the magnitude to change and we can take the oppositive of the derviative as $x_1 = x_0 - af'(x_0)$ (in this case $x_1 = x_0 - a2x_0$) to optimize $x$ to find the minimum point of the function. 
+(This is called steepest descent or gradient descent, there are other ways to update weights).
 
-Now we can use derivative to calculate the gradient of the loss function. To simpify, let:
+Now we can use derivative to calculate the gradient of the loss function. To simplify, let:
 $$
-    L = -y * log(\sigma(\hat{y})) - (1-y) * log(1-\sigma(\hat{y}))
+    L = -y \cdot log(\hat{y}) - (1-y)log(1-\hat{y})
 $$
 
 Take its partial derivative for the weight:
 $$
-    \frac{\partial E}{\partial w_j} =  \frac{\partial}{\partial w_j}[-y * log(\sigma(\hat{y})) - (1-y) * log(1-\sigma(\hat{y}))]
-$$
-
-$$
-\begin{align}
-   x = -y \frac{1}{\sigma(\hat y)} .\frac{\partial}{\partial w_j}\sigma(\hat y) -(1-y) \frac{1}{1-\sigma(\hat y)} .\frac{\partial}{\partial w_j}-\sigma(\hat y)
-\end{align}
+\begin{align*}
+    \frac{\partial L}{\partial w_j} &=  \frac{\partial}{\partial w_j}[-y \cdot log(\hat{y}) - (1-y)log(1-\hat{y})] \\
+    x &= -y \frac{1}{\hat y} \cdot \frac{\partial}{\partial w_j}\hat y -(1-y) \frac{1}{1-\hat y} .\frac{\partial}{\partial w_j}-\hat y
+\end{align*}
 $$
 
 The derivative of sigmoid function:
 $$
-\begin{align}
-    \sigma'(x) &= \frac{\partial}{\partial x} \frac{1} {1 + e^{-x}} \\\\
-    &= -1 . (1 + e^{-x})^{-2} . \frac{\partial e^{-x}}{\partial x} \\\\
-    &= -1 . (1 + e^{-x})^{-2} . e^{-x} . -1 \\\\
-    &= \frac{e^{-x}}{(1 + e^{-x})^2} \\\\
-    &= \frac{1}{1 + e^{-x}} . \frac{e^{-x} + 1 - 1}{1 + e^{-x}} \\\\
+\begin{align*}
+    \sigma'(x) &= \frac{\partial}{\partial x} \frac{1} {1 + e^{-x}} \\
+    &= -1 . (1 + e^{-x})^{-2} . \frac{\partial e^{-x}}{\partial x} \\
+    &= -1 . (1 + e^{-x})^{-2} . e^{-x} . -1 \\
+    &= \frac{e^{-x}}{(1 + e^{-x})^2} \\
+    &= \frac{1}{1 + e^{-x}} . \frac{e^{-x} + 1 - 1}{1 + e^{-x}} \\
     &= \sigma(x)(1 - \sigma(x))
-\end{align}
+\end{align*}
 $$
 
-And partial derivative of $\sigma(\hat y)$ for $w_j$, where $\hat y = Wx+b$
+And partial derivative of $\hat y$ for $w_j$, where $\hat y = \sigma(y)$, $y = \sigma(Wx+b)$
 $$
-\begin{align}
-    \frac{\partial \sigma(\hat y)}{\partial w_j} &= \sigma(\hat y)(1 - \sigma(\hat y)) . \frac{\partial \hat y}{\partial w_j}\\\\
-    &= \sigma(\hat y)(1 - \sigma(\hat y)) . \frac{\partial}{\partial w_j}(w_1x_1 + \cdots + w_jx_j + \cdots + w_nx_n + b)\\\\
-    &= \sigma(\hat y)(1 - \sigma(\hat y))x_j
-\end{align}
+\begin{align*}
+    \frac{\partial \hat y}{\partial w_j} &= \frac{\partial \hat y}{\partial y} \cdot \frac{\partial y}{\partial w_j}\\
+    &= \hat y(1 - \hat y) \cdot \frac{\partial}{\partial w_j}(w_1x_1 + \cdots + w_jx_j + \cdots + w_nx_n + b)\\
+    &= \hat y(1 - \hat y)x_j
+\end{align*}
 $$
 
 Back to the loss function
 $$
-\begin{align}
-    b_j &= b_j + \alpha (y - \sigma(\hat y))
-\end{align}
-$$
-
-
-$$
-\begin{align}
-    \frac{\partial L}{\partial w_j} &= -y \frac{1}{\sigma(\hat y)} . \sigma(\hat y)(1 - \sigma(\hat y))x_j + (1-y) \frac{1}{1-\sigma(\hat y)} . \sigma(\hat y)(1 - \sigma(\hat y))x_j \\\\
-    &= -y(1 - \sigma(\hat y))x_j + (1-y)\sigma(\hat y)x_j \\\\
-    &= -(y - \sigma(\hat y))x_j
-\end{align}
+\begin{align*}
+    \frac{\partial L}{\partial w_j} &= -y \frac{1}{\hat y} \cdot \hat y(1 - \hat y)x_j + (1-y) \frac{1}{1-\hat y} \cdot \hat y(1 - \hat y)x_j \\
+    &= -y(1 - \hat y)x_j + (1-y)\hat yx_j \\
+    &= -(y - \hat y)x_j
+\end{align*}
 $$
 
 The weight and bias will be updated:
 $$
 \begin{align*}
-    w_j' &= w_j + \alpha (y - \sigma(\hat y))x_j \\\\
-    b_j' &= b_j + \alpha (y - \sigma(\hat y))
+    w_j' &= w_j + \alpha (y - \hat y)x_j \\
+    b_j' &= b_j + \alpha (y - \hat y)
 \end{align*}
 $$
 
 $\alpha$ should mean $\frac{1}{m}\alpha$ as the average of the batch multiples the learning rate, but just using one constant for that for convenient.
 
 ## Sample app demo
-Here a sample app for demolish how the things work.
+Here a sample app for demostrate how the things work. You can think the blue points are cats and the orange points are mouses as the coordinates represent heights and kilograms.
+But you can also ignore the analogy to try the model, it is still able to split the points if they are aligned in a proportion way.
 <App client:visible />
