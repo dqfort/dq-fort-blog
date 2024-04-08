@@ -1,9 +1,78 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+
+import { getCollection,  } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+const posts = await getCollection("blog");
+
+const getSortedPosts = (posts: CollectionEntry<"blog">[]) => {
+  return posts
+    .sort(
+      (a, b) =>
+        Math.floor(
+          new Date(b.data.modDatetime ?? b.data.pubDatetime).getTime() / 1000
+        ) -
+        Math.floor(
+          new Date(a.data.modDatetime ?? a.data.pubDatetime).getTime() / 1000
+        )
+    );
+};
+
+const sortedPosts = getSortedPosts(posts);
+const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 ---
 
-<Layout title="Dqfort's blog">
+<Layout title="DQfort's blog">
   <Header />
-  <main><h1>Hello World</h1></main>
+  <main>
+    <section id="hero">
+      <p>
+        This is my blog for talking about technologies, includes frontend, mobile, backend and AI development.
+        I hope that it is helpful for you.
+      </p>
+    </section>
+
+    <hr/>
+
+    {
+      recentPosts.length > 0 && (
+        <section id="recent-posts">
+          <h2>Recent Posts</h2>
+          <ul>
+            {recentPosts.map(
+              ({ data, slug }, index) =>
+                index < 4 && (
+                  <li class="my-6">
+                    <a
+                      href={`/posts/${slug}/`}
+                      class="inline-block text-lg font-medium text-skin-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
+                    >
+                      <h2 >{data.title}</h2>
+                    </a>
+                    {
+                      // <Datetime pubDatetime={data.pubDatetime} modDatetime={data.modDatetime} />
+                    }
+                    <p>{data.description}</p>
+                  </li>
+                )
+            )}
+          </ul>
+        </section>
+      )
+    }
+  </main>
+  <Footer/>
 </Layout>
+
+<style>
+  section, hr {
+    @apply mx-auto max-w-3xl px-4;
+  }
+
+  #recent-posts h2 {
+    @apply text-2xl font-semibold tracking-wide;
+  }
+</style>
