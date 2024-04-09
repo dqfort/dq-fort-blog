@@ -29,10 +29,15 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   <Header />
   <main>
     <section id="hero">
-      <p>
+      <h2 class="text-indigo-600">Hello!</h2>
+      <div class="font-sans antialiased text-gray-600 min-h-full flex flex-col [overflow-anchor:none]">
+      <div class="mx-auto max-w-container px-4 pt-4 sm:px-6 lg:flex lg:px-8">
+      <p class="mt-4 text-base leading-7 text-slate-600">
         This is my blog for talking about technologies, includes frontend, mobile, backend and AI development.
         I hope that it is helpful for you.
       </p>
+      </div>
+      </div>
     </section>
 
     <hr/>
@@ -50,7 +55,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
                       href={`/posts/${slug}/`}
                       class="inline-block text-lg font-medium text-skin-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
                     >
-                      <h2 >{data.title}</h2>
+                      <h3 class="text-sky-500 dark:text-sky-400">{data.title}</h3>
                     </a>
                     {
                       // <Datetime pubDatetime={data.pubDatetime} modDatetime={data.modDatetime} />
@@ -69,10 +74,37 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 
 <style>
   section, hr {
-    @apply mx-auto max-w-3xl px-4;
+    @apply mx-auto max-w-3xl px-4 pb-16 sm:px-6 lg:px-8;
+    /* mx-auto max-w-container px-4 pb-16 sm:px-6 lg:px-8 */
   }
 
   #recent-posts h2 {
-    @apply text-2xl font-semibold tracking-wide;
+    /* @apply text-2xl font-semibold tracking-wide; */
+  }
+
+
+  h2 {
+    @apply text-sm text-indigo-400 text-base font-semibold leading-7;
+    /* color: #65d49fff; */
+    position: relative;
+  }
+  h2::after {
+    background-color: #a8acf9;
+    bottom: 0;
+    content: " ";
+    display: block;
+    height: 50%;
+    left: -3px;
+    top: 10px;
+    opacity: .5;
+    position: absolute;
+    transition: all .15s ease-in-out;
+    width: 6px;
+    z-index: -1;
+  }
+  h2:hover::after {
+    left: 7px;
+    opacity: 1;
+    width: calc(100% - 14px);
   }
 </style>
