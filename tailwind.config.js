@@ -33,6 +33,9 @@ export default {
           accent: withOpacity("--color-accent"),
         }
       },
+      fontFamily: {
+        inter: ["Inter", "sans-serif"],
+      },
     },
   },
   plugins: [require('@tailwindcss/typography')],
