@@ -30,7 +30,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   <main>
     <section id="hero">
       <h2 class="text-indigo-600">Hello!</h2>
-      <div class="font-sans antialiased text-gray-600 min-h-full flex flex-col [overflow-anchor:none]">
+      <div class="font-sans text-gray-600 min-h-full flex flex-col [overflow-anchor:none]">
       <div class="mx-auto max-w-container px-4 pt-4 sm:px-6 lg:flex lg:px-8">
       <p class="mt-4 text-base leading-7 text-slate-600">
         This is my blog for talking about technologies, includes frontend, mobile, backend and AI development.
@@ -84,8 +84,8 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 
 
   h2 {
-    @apply text-sm text-indigo-400 text-base font-semibold leading-7;
-    /* color: #65d49fff; */
+    @apply text-sm text-indigo-400 text-base font-semibold leading-7 -ml-3;
+    font-family: avenir next,avenir,sans-serif;
     position: relative;
   }
   h2::after {
@@ -103,8 +103,8 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
     z-index: -1;
   }
   h2:hover::after {
-    left: 7px;
-    opacity: 1;
-    width: calc(100% - 14px);
+    left: -3px;
+    width: 30%;
+    opacity: .5;
   }
 </style>
