@@ -1,0 +1,83 @@
+---
+// import { getCollection } from "astro:content";
+import { type CollectionEntry, getCollection } from "astro:content";
+import TagPosts from "@components/TagPosts.astro";
+// import getPostsByTag from "@utils/getPostsByTag";
+// import getPagination from "@utils/getPagination";
+// import getUniqueTags from "@utils/getUniqueTags";
+
+// import type { CollectionEntry } from "astro:content";
+// import getSortedPosts from "./getSortedPosts";
+// import { slugifyAll } from "./slugify";
+
+interface Tag {
+  tag: string;
+  tagName: string;
+}
+
+
+
+export async function getStaticPaths() {
+  const getUniqueTags = (posts: CollectionEntry<"blog">[]) => {
+    const tags: Tag[] = posts
+      // .filter(postFilter)
+      .flatMap(post => post.data.tags)
+      // .map(tag => ({ tag: slugifyStr(tag), tagName: tag }))
+      .map(tag => ({ tag: tag, tagName: tag }))
+      .filter(
+        (value, index, self) =>
+          self.findIndex(tag => tag.tag === value.tag) === index
+      )
+      .sort((tagA, tagB) => tagA.tag.localeCompare(tagB.tag));
+
+    return tags;
+  };
+
+  const posts = await getCollection("blog");
+
+  const tags = getUniqueTags(posts);
+
+  return tags.map(({ tag, tagName }) => {
+    return {
+      params: { tag },
+      props: { tag, tagName, posts },
+    };
+  });
+}
+
+
+const getSortedPosts = (posts: CollectionEntry<"blog">[]) => {
+  return posts
+    // .filter(postFilter)
+    .sort(
+      (a, b) =>
+        Math.floor(
+          new Date(b.data.modDatetime ?? b.data.pubDatetime).getTime() / 1000
+        ) -
+        Math.floor(
+          new Date(a.data.modDatetime ?? a.data.pubDatetime).getTime() / 1000
+        )
+    );
+};
+
+
+const getPostsByTag = (posts: CollectionEntry<"blog">[], tag: string) =>
+  getSortedPosts(
+    // posts.filter(post => slugifyAll(post.data.tags).includes(tag))
+    posts.filter(post => post.data.tags.includes(tag))
+  );
+
+
+const { tag, tagName, posts } = Astro.props;
+
+const postsByTag = getPostsByTag(posts, tag);
+
+// const pagination = getPagination({
+//   posts: postsByTag,
+//   page: 1,
+//   isIndex: true,
+// });
+---
+
+<!-- <TagPosts {...pagination} {tag} {tagName} /> -->
+<TagPosts paginatedPosts={postsByTag} {tag} {tagName} />
