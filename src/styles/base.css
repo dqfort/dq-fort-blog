@@ -35,12 +35,12 @@
   .content {
     @apply mx-auto max-w-3xl px-4 pb-16 sm:px-6 lg:px-8;
   }
-  h2 {
+  .remark {
     @apply text-sm text-indigo-400 text-base leading-7 ml-0 sm:-ml-3;
     font-family: avenir next,avenir,sans-serif;
     position: relative;
   }
-  h2::after {
+  .remark::after {
     background-color: #a8acf9;
     bottom: 0;
     content: " ";
@@ -54,7 +54,7 @@
     width: 6px;
     z-index: -1;
   }
-  h2:hover::after {
+  .remark:hover::after {
     left: -3px;
     width: 30%;
     opacity: .5;
