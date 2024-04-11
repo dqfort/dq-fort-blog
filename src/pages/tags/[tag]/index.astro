@@ -10,6 +10,15 @@ import TagPosts from "@components/TagPosts.astro";
 // import getSortedPosts from "./getSortedPosts";
 // import { slugifyAll } from "./slugify";
 
+import Layout from "@layouts/Layout.astro";
+// import Main from "@layouts/Main.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+// import Card from "@components/Card";
+// import Pagination from "@components/Pagination.astro";
+// import { SITE } from "@config";
+
+
 interface Tag {
   tag: string;
   tagName: string;
@@ -72,6 +81,7 @@ const { tag, tagName, posts } = Astro.props;
 
 const postsByTag = getPostsByTag(posts, tag);
 
+const paginatedPosts = postsByTag;
 // const pagination = getPagination({
 //   posts: postsByTag,
 //   page: 1,
@@ -80,4 +90,55 @@ const postsByTag = getPostsByTag(posts, tag);
 ---
 
 <!-- <TagPosts {...pagination} {tag} {tagName} /> -->
-<TagPosts paginatedPosts={postsByTag} {tag} {tagName} />
+
+<Layout title={`Tag: ${tagName}`}>
+  <Header activeNav="tags" />
+  <!-- <Main
+    pageTitle={[`Tag:`, `${tagName}`]}
+    titleTransition={tag}
+    pageDesc={`All the articles with the tag "${tagName}".`}
+  > -->
+  <main class="pt-10">
+    <div class="content">
+      <h2 class="remark">Tags</h2>
+      <h1 slot="title" transition:name={tag}>{`Tag:${tag}`}</h1>
+      <ul>
+        {
+          paginatedPosts.map(({ data, slug }) => {
+            const headerProps = {
+              // style: { viewTransitionName: slugifyStr(title) },
+              style: { viewTransitionName: data.title },
+              className: "text-lg font-medium decoration-dashed hover:underline",
+            };
+
+            // <Card href={`/posts/${slug}/`} frontmatter={data} />
+            return (
+              <li class="my-6">
+                <a
+                  href={`/posts/${slug}/`}
+                  class="inline-block text-lg font-medium text-skin-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
+                >
+                    <h2 {...headerProps}>{data.title}</h2>
+
+                </a>
+                <p>{data.description}</p> 
+              </li>
+            ); }
+          )
+        }
+      </ul>
+    </div>
+  </main>
+  <!-- </Main> -->
+
+  <!-- <Pagination
+    {currentPage}
+    {totalPages}
+    prevUrl={`/tags/${tag}${
+      currentPage - 1 !== 1 ? "/" + (currentPage - 1) : ""
+    }/`}
+    nextUrl={`/tags/${tag}/${currentPage + 1}/`}
+  /> -->
+
+  <Footer />
+</Layout>

@@ -37,9 +37,14 @@ let tags = getUniqueTags(posts);
 <Layout title={`Tags`}>
   <Header activeNav="tags" />
   <!-- <Main pageTitle="Tags" pageDesc="All the tags used in posts."> -->
-    <ul>
-      {tags.map(({ tag }) => <Tag {tag} size="lg" />)}
-    </ul>
+  <main class="pt-10">
+    <div class="content">
+      <h2 class="remark">Tags</h2>
+      <ul>
+        {tags.map(({ tag }) => <Tag {tag} size="lg" />)}
+      </ul>
+    </div>
+  </main>
   <!-- </Main> -->
   <Footer />
 </Layout>
