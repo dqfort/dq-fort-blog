@@ -66,14 +66,11 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
                 if (index < 4) {
                   return (
                     <li class="my-6">
-                      <a
-                        href={`/posts/${slug}/`}
-                        class="underline inline-block text-lg font-medium text-skin-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
-                      >
-                        <h3 class="text-sky-500 dark:text-sky-400">{data.title}</h3>
+                      <a href={`/posts/${slug}/`}>
+                        <h3 class="dark:text-sky-400">{data.title}</h3>
                       </a>
-                      <time class="whitespace-nowrap text-sm leading-6 dark:text-slate-400">{date}</time>
-                      <p class="">{data.description}</p>
+                      <time class="whitespace-nowrap text-sm leading-6 text-slate-500 dark:text-slate-400">{date}</time>
+                      <p class="font-light text-slate-700 dark:text-slate-300">{data.description}</p>
                     </li>
                   )
                 }
@@ -92,8 +89,11 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
     @apply mx-auto max-w-3xl px-4 pb-16 sm:px-6 lg:px-8;
     /* mx-auto max-w-container px-4 pb-16 sm:px-6 lg:px-8 */
   }
-
-  #recent-posts h2 {
+  #recent-posts {
+    @apply font-inter;
+  }
+  #recent-posts h3 {
+    @apply text-base inline-block text-lg text-skin-accent hover:underline hover:decoration-dashed;
     /* @apply text-2xl font-semibold tracking-wide; */
   }
 </style>

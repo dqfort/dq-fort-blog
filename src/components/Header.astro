@@ -46,7 +46,7 @@
   </div>
 </header>
 
-<style>
+<style is:global>
   .nav-container {
     @apply mx-auto max-w-3xl;
   }
@@ -82,7 +82,13 @@
     width: calc(100% - 14px);
   }
   .logo .stating {
-    @apply text-sm text-gray-400 font-light pl-1;
+    @apply text-sm text-gray-400 dark:text-gray-300 font-light pl-1;
+  }
+  .dark .logo .blog-title {
+    color: rgb(254, 243, 83);
+  }
+  .dark .logo .blog-title::after {
+    background-color: rgb(251, 255, 200);
   }
 
   nav {
