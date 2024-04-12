@@ -1,0 +1,36 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+---
+
+<Layout title="DQfort's blog">
+  <Header />
+  <main class="pt-10">
+    <div class="content">
+      <h2 class="remark">About me</h2>
+
+      <p>
+        I'm Eric, a software developer. I'm interested in building web and mobile applications,
+        and I like learning new things such as Web Assembly, and Deep learning.
+      </p>
+      <p>
+        Learning is a hard path, but if you keep working you will be rewarded for it.
+      </p>
+      <p>
+        This blog is made with <a href="https://astro.build/">Astro</a>, <a href="https://tailwindcss.com/">Tailwind</a> and <a href="https://react.dev/">React</a> for some demo apps.
+        And it references a lot from <a href="https://astro-paper.pages.dev/">AstroPaper</a>.
+      </p>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  p {
+    @apply pt-10;
+  }
+  a {
+    @apply text-skin-accent hover:underline hover:decoration-dashed;
+  }
+</style>
