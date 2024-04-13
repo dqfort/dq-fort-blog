@@ -1,0 +1,57 @@
+---
+title: Why keys are needed for stateful widgets in Flutter
+author: Eric Cheung
+pubDatetime: 2024-04-13T03:33:00Z
+slug: why-keys-are-needed-for-stateful-widgets-in-flutter
+draft: false
+tags:
+  - Flutter
+description:
+  Learn about how keys are used for stateful widgets in Flutter.
+---
+
+If you have developed Flutter apps, you might aware that keys are needed to be set for rendering a list of widgets properly. But why not it required for stateless widgets? Let's go throught about it. 
+
+Here is a sample app try to reverse the animal names. [Animal names app](https://zapp.run/edit/flutter-z5ze06it5zf0?entry=lib/main.dart&file=lib/main.dart)
+
+If you click the button in the app, it will not work. Let try to fix it by uncomment the code as:
+
+```dart
+// ...
+class AnimalNamesState extends State<AnimalNames> {
+  List<AnimalName> tiles = [];
+
+  @override
+  initState() {
+    super.initState();
+
+    tiles = [
+      AnimalName(key: UniqueKey(), name: "zebra"),
+      AnimalName(key: UniqueKey(), name: "dolphin"),
+      AnimalName(key: UniqueKey(), name: "horse"),
+      AnimalName(key: UniqueKey(), name: "turtle"),
+    ];
+  }
+
+// ...
+class AnimalName extends StatefulWidget {
+  const AnimalName({required Key key, required this.name}) : super(key: key);
+
+  final String name;
+
+  @override
+  AnimalNameState createState() => AnimalNameState();
+}
+```
+And now it works! What happened? We can use the debugger in Visual studio code to see what happened inside.
+
+In Visual studio code, set a break point at the setState. Then try to run step into, step over for a few times, you will find that it will run the updateChildren method.
+
+Keep looking to the method, it calls Widget.canUpdate to verify the widget whether can be update.
+
+```dart
+static bool canUpdate(Widget oldWidget, Widget newWidget) {
+    return oldWidget.runtimeType == newWidget.runtimeType
+        && oldWidget.key == newWidget.key;
+}
+```
