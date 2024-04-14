@@ -19,13 +19,13 @@ If you click the button in the app, it will not work. Let try to fix it by uncom
 ```dart
 // ...
 class AnimalNamesState extends State<AnimalNames> {
-  List<AnimalName> tiles = [];
+  List<AnimalName> animals = [];
 
   @override
   initState() {
     super.initState();
 
-    tiles = [
+    animals = [
       AnimalName(key: UniqueKey(), name: "zebra"),
       AnimalName(key: UniqueKey(), name: "dolphin"),
       AnimalName(key: UniqueKey(), name: "horse"),
@@ -45,9 +45,9 @@ class AnimalName extends StatefulWidget {
 ```
 And now it works! What happened? We can use the debugger in Visual studio code to see what happened inside.
 
-In Visual studio code, set a break point at the setState. Then try to run step into, step over for a few times, you will find that it will run the updateChildren method.
+In Visual studio code, set a break point at the setState. Then try to run step into, step over for a few times, you will find that it will run the `updateChildren` method.
 
-Keep looking to the method, it calls Widget.canUpdate to verify the widget whether can be update.
+Keep looking to the method, it calls `Widget.canUpdate` to verify the widget whether can be update.
 
 ```dart
 static bool canUpdate(Widget oldWidget, Widget newWidget) {
@@ -55,3 +55,10 @@ static bool canUpdate(Widget oldWidget, Widget newWidget) {
         && oldWidget.key == newWidget.key;
 }
 ```
+
+If the keys are not set, and animals keep the same type after reversing. So the `canUpdate` will return true to let the elements update their widgets. But it still keep the same layout since it only updated the widgets from `AnimalName` to `AnimalName`, and the names in the states are not changed.
+
+To solve it we need to set keys to the widgets, Flutter can use them to re-order the elements rathering re-creating the widgets in the `updateChildren` method.
+
+## Summary
+It looks quite complicated, but it helps Flutter update the elements efficency to just update the widgets, or re-order the elements. There are ObjectKey, UniqueKey, and ValueKey can be used in different scieniros, you can find the details in [LocalKey document](https://api.flutter.dev/flutter/foundation/LocalKey-class.html).
