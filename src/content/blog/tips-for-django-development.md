@@ -42,7 +42,7 @@ class BookingRoom(models.Model):
     # ...
     region = model.CharField(max_length=40)
     booked_by = models.OneToOneField(User, on_delete=models.RESTRICT)
-    non_booking_rooms = NonBookingRoomManager
+    non_booking_rooms = NonBookingRoomManager()
 ```
 
 From the example above, we can define the manager that returns results fulfilling criterias in `get_queryset`. We can also define other methods in the manger for querying other information. The usage of the manger like:
@@ -52,4 +52,24 @@ BookingRoom.non_booking_rooms.all()
 
 # Get all regions for non-booking rooms
 BookingRoom.non_booking_rooms.get_available_regions()
+```
+
+[More details of using managers](https://docs.djangoproject.com/en/5.0/topics/db/managers/)
+
+## Local development
+Usually you would need to override some settings for local development, like install Django debug toolbar. Add the following code in your project's `settings.py` can implement for that:
+```python
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+local_settings_path = os.path.join(BASE_DIR, 'local_settings.py')
+
+if os.path.exists(local_settings_path):
+    from local_settings import *
+```
+
+Then create the `local_settings.py` in the project's root directory, config Django debug toolbar like:
+
+```python
+from settings import * 
+INSTALLED_APPS += [ "debug_toolbar", ]
 ```
