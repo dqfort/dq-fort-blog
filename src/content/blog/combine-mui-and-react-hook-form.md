@@ -11,7 +11,7 @@ description:
   Make React hook form using MUI components
 ---
 
-[MUI](https://mui.com/) provides is a rich UI tool kit provides a lot components based on [Material Design](https://m3.material.io/). However, handling forms data is out of its scope, but there is [React Hook Form](https://react-hook-form.com/) for it. So could we combine those feature together? Yes, we can inherit MUI components for it.
+[MUI](https://mui.com/) is a rich UI tool kit provides a lot components based on [Material Design](https://m3.material.io/). However, handling forms data is out of its scope, but there is [React Hook Form](https://react-hook-form.com/) for it. So could we combine those feature together? Yes, we can inherit MUI components for it.
 
 For example, we can create a TextField component like:
 ```typescript
@@ -36,13 +36,14 @@ function TextField ({
           onChange = {field.onChange} // send value to hook form
           onBlur = {field.onBlur} // notify when input is touched/blur
           value = {field.value} // input value
-          name = {field.name} // send down the input name
-          inputRef = {field.ref} // send input ref, so we can focus on input when error appear
+          name = {field.name} // set the input name
+          inputRef = {field.ref} // pass the input ref to the mui text field, so we can focus on the input when error appear
           {
-            ...(fieldState.error && {
-              error: true,
-              helperText: fieldState.error.message
-            }
+            ...(
+              fieldState.error && {
+                error: true,
+                helperText: fieldState.error.message
+              }
             )
           }
           {...props}
@@ -60,3 +61,7 @@ function TextField ({
 
 export default TextField;
 ```
+
+It seems complicated, but it's not. The main element is the `control` from React hook form, which used for handling like form processing data, and validation. Then we bind the MUI Textfield and the `control` by using the `Controller` component form React hook form. Now we can tall the control what to render, in this example we are using MUI TextField. Then set the value from the control's field, and binding the events like `onChange`, `onBlur` so that the form control can know the actions in the text field and do some validations. `InputRef` is used for set focus if getting any errors.
+
+Here is a more complicated [demo](https://stackblitz.com/edit/vitejs-vite-94epy9?file=src%2FApp.tsx) to show how it works, it might need a longer time to load.
