@@ -67,7 +67,7 @@ The value from this formula can indicate how well perform of a model. If the val
 ## Training
 
 Now we have a loss function to know how good of a model. And it can also help to optimize a model. How is it possible? What need to do is try to adjust the weights of the model to make the loss function evaluated near zero. 
-We can update the model's weights to form $f(x)$ to result in outputs always higher or equal to one to mean it is a cat for higher heights and kilograms as inputs, and vice versa it is a mouse.
+We can update the model's weights to form $f(x)$ to result in outputs always higher or equal to 0.5 to mean it is a cat for higher heights and kilograms as inputs, and vice versa it is a mouse.
 But how much should we adjust the weight? The answer is by using the derivative. For example, consider a function $f(x) = x^2$, 
 its derivative is $2x$. By adding the derivative with a different of $x$ values, ${x_1}^2 \approx {x_0}^2 + 2(x_1-x_0)$. 
 The derivative indicates the direction and the magnitude to change and we can take the oppositive of the derivative as $x_1 = x_0 - af'(x_0)$ (in this case $x_1 = x_0 - a2x_0$) to optimize $x$ to find the minimum point of the function. 
