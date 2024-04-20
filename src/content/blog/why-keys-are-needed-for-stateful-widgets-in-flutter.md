@@ -56,7 +56,10 @@ static bool canUpdate(Widget oldWidget, Widget newWidget) {
 }
 ```
 
-If the keys are not set, and animals keep the same type after reversing. So the `canUpdate` will return true to let the elements update their widgets. But it still keep the same layout since it only updated the widgets from `AnimalName` to `AnimalName`, and the names in the states are not changed.
+If the keys are not set, and animals keep the same type after reversing. So the `canUpdate` will return true to let the elements update their widgets. But it still keep the same layout since it only updated the widgets from `AnimalNameState.build` to `AnimalNameState.build`, and the names in the states are not changed.
+
+You can think the `AnimaName` components represent like this diagram:
+![Flutter state elements.](./flutter_state_elements.png)
 
 To solve it we need to set keys to the widgets, Flutter can use them to re-order the elements rathering re-creating the widgets in the `updateChildren` method.
 
