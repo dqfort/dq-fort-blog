@@ -133,7 +133,7 @@ export default function App() {
     plotGroup.appendChild(trainGroup);
 
     const perceptronSplitter = createSvgElement("line");
-    perceptronSplitter.setAttribute("stroke", "black");
+    perceptronSplitter.setAttribute("class", "separator");
 
     plotGroup.appendChild(perceptronSplitter);
 
