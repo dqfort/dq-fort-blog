@@ -73,7 +73,7 @@ its derivative is $2x$. By adding the derivative with a different of $x$ values,
 The derivative indicates the direction and the magnitude to change and we can take the oppositive of the derivative as $x_1 = x_0 - af'(x_0)$ (in this case $x_1 = x_0 - a2x_0$) to optimize $x$ to find the minimum point of the function. 
 (This is called steepest descent or gradient descent, there are other ways to update weights).
 
-Now we can use derivative to calculate the gradient of the loss function. To simplify, let:
+Now we can use a derivative to calculate the gradient of the loss function. To simplify, let:
 $$
     L = -y \cdot log(\hat{y}) - (1-y)log(1-\hat{y})
 $$
@@ -86,7 +86,7 @@ $$
 \end{align*}
 $$
 
-The derivative of sigmoid function:
+The derivative of the sigmoid function:
 $$
 \begin{align*}
     \sigma'(x) &= \frac{\partial}{\partial x} \frac{1} {1 + e^{-x}} \\
@@ -116,7 +116,7 @@ $$
 \end{align*}
 $$
 
-The weight and bias will be updated:
+The weight and bias will be updated as:
 $$
 \begin{align*}
     w_j' &= w_j + \alpha (y - \hat y)x_j \\
@@ -124,9 +124,9 @@ $$
 \end{align*}
 $$
 
-$\alpha$ should mean $\frac{1}{m}\alpha$ as the average of the batch multiples the learning rate, but just using one constant for that for convenient.
+$\alpha$ should mean $\frac{1}{m}\alpha$ as the average of the batch multiples the learning rate, but just using one constant for that for convenience.
 
 ## Sample app demo
-Here a sample app for demostrate how the things work. You can think the blue points are cats and the orange points are mouses as the coordinates represent heights and kilograms.
+Here is a sample app to demonstrate how it works. You can think the blue points are cats and the orange points are mice as the coordinates represent heights and kilograms.
 But you can also ignore the analogy to try the model, it is still able to split the points if they are aligned in a proportion way.
 <App client:visible />
