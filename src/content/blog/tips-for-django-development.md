@@ -11,9 +11,9 @@ description:
   Some tips about using Django for development
 ---
 
-Django is a great framework for web development, with build-in ORM, MVC architecture and a large ecosystem with many external plugins.
+Django is a great framework for web development, with built-in ORM, MVC architecture, and a large ecosystem with many external plugins.
 
-However, it would be a bit complicated if you are new to it. There are some tips would help.
+However, it would be a bit complicated if you are new to it. There are some tips that would help you at the beginning.
 
 ## Managing apps
 You can create an app with this command:
@@ -21,14 +21,14 @@ You can create an app with this command:
 python manage.py startapp `app_name`
 ```
 
-An application in a Django project contains the logics how to handle the requests from client users, or it could be a group of background tasks. If you think it would deploy to different servers with different features, it should separate the features to different apps. For example, you might have `coreapp` app for public users and `myadmin` app for internal users, since `coreapp` deploy to more servers since more usage but `myadmin` should deploy fewer servers.
+An application in a Django project contains the logic of how to handle the requests from client users, or it could be a group of background tasks. If you think it would deploy to different servers with different features, it should separate the features into different apps. For example, you might have `coreapp` app for public users and `myadmin` app for internal users, since `coreapp` deploy to more servers since more usage but `myadmin` should deploy to fewer servers.
 
 And an app should depend on apps as a stack to avoid circular import. That means `myadmin` depend on `coreapp` but `coreapp` should not depend on `myadmin`. You would also create a `scheduler` app depend on `coreapp` and `myadmin`.
 
 ## Encapsulate business logic
-Web applications need to exchange data to database, usually about the business logic. It could be a good idea encapsulating that for readability and reusable. Django provides custom manger for structuring about it.
+Web applications need to exchange data to databases, usually about the business logic. It could be a good idea to encapsulate that for readability and reusable. Django provides a custom manger for structuring it.
 
-Let say there is a `BookingRoom` model to store booking rooms information. You might want to find the rooms not booked, and you can use a custom model manager like:
+Let's say there is a `BookingRoom` model to store booking room information. You might want to find the rooms not booked, and you can use a custom model manager like:
 ```python
 class NonBookingRoomManager(models.Manager):
     def get_queryset(self):
@@ -45,7 +45,7 @@ class BookingRoom(models.Model):
     non_booking_rooms = NonBookingRoomManager()
 ```
 
-From the example above, we can define the manager that returns results fulfilling criterias in `get_queryset`. We can also define other methods in the manger for querying other information. The usage of the manger like:
+From the example above, we can define the manager that returns results fulfilling criteria in `get_queryset`. We can also define other methods in the manager for querying other information. The usage of the manager like:
 ```python
 # Get all non-booking rooms
 BookingRoom.non_booking_rooms.all()
@@ -57,7 +57,7 @@ BookingRoom.non_booking_rooms.get_available_regions()
 [More details of using managers](https://docs.djangoproject.com/en/5.0/topics/db/managers/)
 
 ## Local development
-Usually you would need to override some settings for local development, like install Django debug toolbar. Add the following code in your project's `settings.py` can implement for that:
+Usually, you would need to override some settings for local development, like installing Django debug toolbar. Add the following code to your project's `settings.py` can implement for that:
 ```python
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
